@@ -138,6 +138,7 @@ nav a:last-child{
   nav a{
     flex: 0 0 auto;
     margin-right: 0;
+    font-size: 15px;   /* ← hier verkleinen */
   }
 
 }
