@@ -1,0 +1,66 @@
+---
+import Header from "@components/header.astro";
+import Footer from "@components/footer.astro";
+
+const { title = "Benaja Logos" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+
+    <!-- SEO -->
+    <meta
+      name="description"
+      content="Benaja Logos — Inzicht in een gezond, rechtvaardig en duurzaam leven."
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Benaja Logos" />
+    <meta
+      property="og:description"
+      content="Inzicht in een gezond, rechtvaardig en duurzaam leven."
+    />
+    <meta property="og:image" content="/images/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://benajalogos.nl" />
+    <meta property="og:site_name" content="Benaja Logos" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/global.css" />
+
+    <!-- Icons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+<link rel="mask-icon" href="/boom.svg" color="#1f3a5f" />
+
+  </head>
+
+  <body>
+    <Header />
+
+    <main>
+      <div class="container main-layout">
+        <div class="content">
+          <slot />
+        </div>
+
+        <div class="logo-side" aria-hidden="true">
+          <img
+            src="/images/logo.png"
+            alt="Benaja Logos"
+            class="site-logo"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </body>
+</html>
