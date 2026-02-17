@@ -124,22 +124,25 @@ nav a:last-child{
   }
 }
 
-/* Mobile header fix */
 @media (max-width:1024px){
 
   nav{
+    display:flex;
+    align-items:center;        /* alles op één verticale lijn */
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
     gap: 12px;
-    align-items: center;   /* ← nieuw: logo + links netjes op één lijn */
   }
 
   nav a{
+    display:flex;              /* tekst zelf ook centreren */
+    align-items:center;
     flex: 0 0 auto;
     margin-right: 0;
     font-size: 14px;
+    line-height:1;             /* voorkomt zakken */
   }
 
 }
