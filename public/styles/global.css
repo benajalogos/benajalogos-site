@@ -141,7 +141,7 @@ nav a:last-child{
     align-items:center;
     flex: 0 0 auto;
     margin-right: 0;
-    font-size: 14px;
+    font-size: 15px;
     line-height:1;             /* voorkomt zakken */
   }
 
@@ -159,7 +159,7 @@ nav a:last-child{
   }
 
   .mobile-logo img{
-    width:40px;
+    width:36px;
     height:auto;
     display:block;
     margin-right:0px;
