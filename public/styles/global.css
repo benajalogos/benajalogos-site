@@ -133,12 +133,13 @@ nav a:last-child{
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
     gap: 12px;
+    align-items: center;   /* ← nieuw: logo + links netjes op één lijn */
   }
 
   nav a{
     flex: 0 0 auto;
     margin-right: 0;
-    font-size: 14px;   /* ← hier verkleinen */
+    font-size: 14px;
   }
 
 }
@@ -148,32 +149,24 @@ nav a:last-child{
   display:none;
 }
 
- @media (max-width:1024px){
+@media (max-width:1024px){
   .mobile-logo{
     display:inline-flex;
     align-items:center;
   }
 
   .mobile-logo img{
-    width:28px;       /* kleiner logo */
+    width:28px;
     height:auto;
     display:block;
-    margin-right:8px; /* ruimte tot Home */
+    margin-right:8px;
   }
 }
-
-  /* logo boven nav (zonder desktop te veranderen) */
-  .header-inner{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-  }
 
   /* nav blijft 1 regel en scrollbaar */
   nav{
     width:100%;
   }
-}
 
 
 /* ---------- Typography ---------- */
