@@ -83,7 +83,7 @@ nav a:last-child{
 
 .main-layout{
   display:grid;
-  grid-template-columns: 700px 260px; /* content + logo */
+  grid-template-columns: minmax(0, 700px) 260px;
   gap:0px;
   padding-top:25px;
   align-items:start;
@@ -111,12 +111,16 @@ nav a:last-child{
 }
 
 /* Responsive */
-@media (max-width:900px){
+
+@media (max-width:1024px){
   .main-layout{
     grid-template-columns:1fr;
   }
   .logo-side{
     display:none;
+  }
+  .content{
+    max-width:100%;
   }
 }
 
