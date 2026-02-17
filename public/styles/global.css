@@ -128,7 +128,7 @@ nav a:last-child{
 
   nav{
     display:flex;
-    align-items:center;        /* alles op één verticale lijn */
+    align-items:flex-end;
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -138,7 +138,7 @@ nav a:last-child{
 
   nav a{
     display:flex;              /* tekst zelf ook centreren */
-    align-items:center;
+    align-items:flex-end;
     flex: 0 0 auto;
     margin-right: 0;
     font-size: 15px;
