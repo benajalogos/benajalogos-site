@@ -127,17 +127,16 @@ nav a:last-child{
 /* Mobile header fix */
 @media (max-width:1024px){
 
-  .header-inner{
-    flex-wrap: wrap;
+  nav{
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
     gap: 12px;
   }
 
-  nav{
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
   nav a{
+    flex: 0 0 auto;
     margin-right: 0;
   }
 
