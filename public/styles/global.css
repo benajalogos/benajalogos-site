@@ -143,22 +143,24 @@ nav a:last-child{
 
 }
 
-/* Mobile logo */
+/* Mobile logo (inline next to Home) */
 .mobile-logo{
   display:none;
 }
 
-@media (max-width:1024px){
-
+ @media (max-width:1024px){
   .mobile-logo{
-    display:block;
+    display:inline-flex;
+    align-items:center;
   }
 
   .mobile-logo img{
-    width:120px;
+    width:28px;       /* kleiner logo */
     height:auto;
     display:block;
+    margin-right:8px; /* ruimte tot Home */
   }
+}
 
   /* logo boven nav (zonder desktop te veranderen) */
   .header-inner{
