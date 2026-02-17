@@ -1,0 +1,364 @@
+:root{
+  --bg:#E6F3FA;
+  --card:#ffffff;
+  --text:#1f2933;
+  --muted:#5b6b7c;
+  --line:#c9d8e6;
+  --accent:#1f3a5f;
+}
+
+/* ---------- Reset ---------- */
+
+*{ box-sizing:border-box; }
+html{ overflow-y:scroll; }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--accent);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  font-size:18px;
+  line-height:1.75;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ---------- Container ---------- */
+
+.container{
+  width:100%;
+  max-width:1050px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ---------- Header / Footer ---------- */
+
+header{
+  border-bottom:1px solid var(--line);
+  padding:16px 0;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  margin-top:auto;
+}
+
+.footer-inner{
+  max-width:1000px;
+  margin:0 auto;
+  padding:12px 18px;
+}
+
+.footer-text{
+  font-size:12px;
+}
+
+/* ---------- Navigation ---------- */
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:32px;
+}
+
+nav{
+  display:flex;
+  flex-wrap:nowrap;
+}
+
+nav a{
+  margin-right:16px;
+}
+
+nav a:last-child{
+  margin-right:0;
+}
+
+/* ===================================================== */
+/* ================== LOGO LAYOUT ====================== */
+/* ===================================================== */
+
+.main-layout{
+  display:grid;
+  grid-template-columns: minmax(0, 700px) 260px;
+  gap:0px;
+  padding-top:25px;
+  align-items:start;
+
+  /* nieuw */
+  margin-left:auto;
+  margin-right:auto;
+  transform: translateX(0px); /* meer naar rechts = hoger getal */
+
+}
+
+.logo-side{
+  display:flex;
+  justify-content:flex-start;  /* maximaal links in de logokolom */
+  align-items:flex-start;
+  padding-left:0;              /* startpunt = strak links */
+  padding-top:0;               /* verticaal bijstellen */
+}
+
+.site-logo{
+  width:220px;
+  height:auto;
+  display:block;
+  margin-top:-63px;            /* jouw verticale afstelling */
+}
+
+/* Responsive */
+
+@media (max-width:1024px){
+  .main-layout{
+    grid-template-columns:1fr;
+  }
+  .logo-side{
+    display:none;
+  }
+  .content{
+    max-width:100%;
+  }
+}
+
+@media (max-width:1024px){
+
+  nav{
+    display:flex;
+    align-items:flex-end;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    gap: 12px;
+  }
+
+  nav a{
+    display:flex;              /* tekst zelf ook centreren */
+    align-items:flex-end;
+    flex: 0 0 auto;
+    margin-right: 0;
+    font-size: 15px;
+    line-height:1;             /* voorkomt zakken */
+  }
+
+}
+
+/* Mobile logo (inline next to Home) */
+.mobile-logo{
+  display:none;
+}
+
+@media (max-width:1024px){
+  .mobile-logo{
+    display:inline-flex;
+    align-items:center;
+  }
+
+  .mobile-logo img{
+    width:36px;
+    height:auto;
+    display:block;
+    margin-right:0px;
+  }
+}
+
+  /* nav blijft 1 regel en scrollbaar */
+  nav{
+    width:100%;
+  }
+
+
+/* ---------- Typography ---------- */
+
+a{
+  color:var(--accent);
+  text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+
+h1,h2,h3{
+  line-height:1.2;
+  margin:0 0 16px 0;
+  color:var(--accent);
+}
+
+p{
+  margin:0 0 18px 0;
+}
+
+small,
+.muted{
+  color:var(--muted);
+}
+
+/* ---------- Cards & Grid ---------- */
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+.grid{
+  display:grid;
+  gap:16px;
+  align-items:stretch;
+}
+
+@media (min-width:860px){
+  .grid-2{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+/* ---------- Buttons ---------- */
+
+.btn{
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--card);
+}
+
+.btn:hover{
+  border-color:#cbd5e1;
+  text-decoration:none;
+}
+
+.card .btn{
+  align-self:center;
+}
+
+/* ---------- Badges ---------- */
+
+.badge{
+  display:inline-block;
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  color:var(--muted);
+  background:rgba(255,255,255,.7);
+  white-space:nowrap;
+}
+
+.badge.free{
+  border-color: rgba(14,165,233,.35);
+}
+
+.badge.paid{
+  border-color: rgba(37,99,235,.35);
+}
+
+/* ---------- Page Helpers ---------- */
+
+.back-link{ margin:0 0 18px 0; }
+.section-title{ margin-top:50px; }
+.section-cta{ margin-top:50px; }
+
+.list-intro{
+  margin-top:30px;
+  margin-bottom:6px;
+}
+
+.feature-list{
+  margin-top:6px;
+  margin-bottom:30px;
+  padding-left:18px;
+}
+
+.feature-list li{
+  margin:0 0 10px 0;
+}
+
+/* ---------- Downloads ---------- */
+
+.downloads-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+  margin-top:24px;
+  align-items:stretch;
+}
+
+@media (min-width:860px){
+  .downloads-grid{
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+  }
+}
+
+.downloads-list{
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.downloads-list li{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 10px 0;
+  width:100%;
+}
+
+.downloads-list li > :first-child{
+  flex:1;
+  min-width:0;
+}
+
+.downloads-list li > :last-child{
+  margin-left:auto;
+  flex:0 0 auto;
+}
+
+.downloads-list li a{
+  text-decoration:none;
+  display:inline-flex;
+}
+
+.downloads-list .badge{
+  white-space:nowrap;
+}
+
+/* ---------- Book details ---------- */
+
+.model-line{
+  margin-top:10px;
+  font-weight:500;
+}
+
+/* ---------- Kennismaking ---------- */
+
+.pillars-grid{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:16px;
+  align-items:stretch;
+}
+
+.pillars-grid li{
+  display:flex;
+}
+
+.pillars-grid .btn{
+  width:38%;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:56px;
+}

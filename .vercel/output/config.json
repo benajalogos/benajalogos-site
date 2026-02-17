@@ -1,0 +1,135 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/_server-islands/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/_image/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/api/download/([^/]+?)/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/auteursrecht/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/bedankt-god-thanks/bedankt-een-reis/een-reis-door-de-bijbel/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/bedankt-god-thanks/korting-beide-boeken/beide-boeken-samen/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/bedankt-god-thanks/test0/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/bedankt-god-thanks/test1/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/boeken/een-reis-door-de-bijbel/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/boeken/het-handboek-voor-leven/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/boeken/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/contact/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/downloads/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/god-zijn-woord-en-zijn-orde/god/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/god-zijn-woord-en-zijn-orde/god-en-leven/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/god-zijn-woord-en-zijn-orde/gods-orde/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/god-zijn-woord-en-zijn-orde/gods-woord/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/god-zijn-woord-en-zijn-orde/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/persoonlijke-zoektocht/een-relatie-met-god/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/persoonlijke-zoektocht/ervaren-van-samenhang/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/persoonlijke-zoektocht/ontdekken-van-ordening/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/persoonlijke-zoektocht/verlangen-naar-begrip/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/persoonlijke-zoektocht/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/professionele-ontwikkeling/begeleiding-en-advies/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/professionele-ontwikkeling/ontdekking-van-informatieverwerking/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/professionele-ontwikkeling/scholing-en-werk/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/professionele-ontwikkeling/waarde-van-gods-woord/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/professionele-ontwikkeling/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/kennismaking/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^/$",
+			"dest": "_render"
+		}
+	]
+}
