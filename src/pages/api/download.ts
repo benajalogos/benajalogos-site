@@ -2,6 +2,9 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { Readable } from "node:stream";
+
+export const config = { runtime: "nodejs" };
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -43,13 +46,17 @@ export const GET: APIRoute = async ({ url }) => {
     const stripe = new Stripe(STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
-    if (session.payment_status !== "paid") {
+    if (
+      session.payment_status !== "paid" ||
+      session.status !== "complete"
+    ) {
       return json({ ok: false, error: "Payment not completed" }, 403);
     }
 
     // ---------- FILE MAP ----------
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
+      "het-handboek": "het-handboek.pdf",
     };
 
     const filename = fileMap[file];
@@ -80,23 +87,34 @@ export const GET: APIRoute = async ({ url }) => {
     }
 
     // ---------- STREAM ----------
-    const stream = obj.Body as ReadableStream;
+    const stream = Readable.toWeb(obj.Body as any) as unknown as ReadableStream;
 
-// unieke downloadnaam bouwen
-const now = new Date();
-const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
-const code = sessionId
-  .replace(/[^a-zA-Z0-9]/g, "")
-  .slice(-6)
-  .toUpperCase();
+    // ---------- UNIEKE DOWNLOADNAAM ----------
+    const now = new Date();
+    const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
 
-const downloadName = `Een-reis-door-de-Bijbel-${date}-${code}.pdf`;
+    const code = session_id
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .slice(-6)
+      .toUpperCase();
 
-return new Response(stream, {
-  status: 200,
-  headers: {
-    "Content-Type": "application/pdf",
-    "Content-Disposition": `attachment; filename="${downloadName}"`,
-    "Cache-Control": "no-store",
-  },
-});
+    const titleMap: Record<string, string> = {
+      "een-reis": "Een-reis-door-de-Bijbel",
+      "het-handboek": "Het-handboek-voor-leven",
+    };
+
+    const baseTitle = titleMap[file] ?? file;
+    const downloadName = `${baseTitle}-${date}-${code}.pdf`;
+
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${downloadName}"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch (err: any) {
+    return json({ ok: false, error: err?.message ?? String(err) }, 500);
+  }
+};
