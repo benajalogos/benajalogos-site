@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
           price_data: {
             currency: "eur",
             product_data: { name: "Een reis door de Bijbel" },
-            unit_amount: 3000, // €30,00
+            unit_amount: 1, // €30,00
           },
           quantity: 1,
         },
