@@ -25,7 +25,7 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
           price_data: {
             currency: "eur",
             product_data: { name: "Een reis door de Bijbel" },
-            unit_amount: 1, // €0,01 test
+            unit_amount: 3000, // = € 30
           },
           quantity: 1,
         },
