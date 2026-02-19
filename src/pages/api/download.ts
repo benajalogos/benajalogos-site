@@ -14,14 +14,18 @@ function json(data: unknown, status = 200) {
   });
 }
 
+// Belangrijk voor Vercel: Node runtime (niet edge)
 export const config = { runtime: "nodejs" };
 
 export const GET: APIRoute = async ({ url }) => {
   try {
-    // ===== 0) ENV =====
-    const secretKey = import.meta.env.STRIPE_SECRET_KEY;
-    if (!secretKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
+    // ===== 0) Stripe secret =====
+    const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+      return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
+    }
 
+    // ===== 0b) R2 env vars =====
     const endpoint = import.meta.env.R2_ENDPOINT;
     const accessKeyId = import.meta.env.R2_ACCESS_KEY_ID;
     const secretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY;
@@ -55,7 +59,7 @@ export const GET: APIRoute = async ({ url }) => {
     if (!fileKey) return json({ ok: false, error: "Missing file" }, 400);
 
     // ===== 2) Stripe check: paid + complete =====
-    const stripe = new Stripe(secretKey);
+    const stripe = new Stripe(stripeSecretKey);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     const isPaid = session.payment_status === "paid";
@@ -74,7 +78,7 @@ export const GET: APIRoute = async ({ url }) => {
     }
 
     // ===== 3) Map fileKey -> R2 object key =====
-    // Opmerking verwerkt: jouw R2-bestand heet "een-reis-door-de-bijbel.pdf"
+    // (jouw opmerking verwerkt)
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
       "het-handboek": "het-handboek.pdf",
@@ -83,7 +87,7 @@ export const GET: APIRoute = async ({ url }) => {
     const objectKey = fileMap[fileKey];
     if (!objectKey) return json({ ok: false, error: "Unknown file key" }, 400);
 
-    // ===== 4) Downloadnaam =====
+    // ===== 4) Mooie downloadnaam (datum + 4 tekens) =====
     const now = new Date();
     const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
     const code = sessionId.replace(/[^a-zA-Z0-9]/g, "").slice(-4).toUpperCase();
@@ -96,7 +100,7 @@ export const GET: APIRoute = async ({ url }) => {
     const baseTitle = titleMap[fileKey] ?? fileKey;
     const downloadName = `${baseTitle}-${date}-${code}.pdf`;
 
-    // ===== 5) R2 (S3 compatible) stream =====
+    // ===== 5) R2 stream (S3 compatible) =====
     const s3 = new S3Client({
       region: "auto",
       endpoint,
@@ -110,19 +114,20 @@ export const GET: APIRoute = async ({ url }) => {
       })
     );
 
-    if (!obj.Body) return json({ ok: false, error: "Empty file body" }, 500);
+    if (!obj.Body) {
+      return json({ ok: false, error: "Empty file body" }, 500);
+    }
 
-    // AWS SDK kan Body als Node Readable of Web ReadableStream geven.
-    let bodyStream: ReadableStream;
+    // obj.Body kan in Node een Readable zijn; we maken er een web stream van
     const bodyAny = obj.Body as any;
 
+    let webStream: ReadableStream;
     if (typeof bodyAny?.transformToWebStream === "function") {
-      bodyStream = bodyAny.transformToWebStream();
+      webStream = bodyAny.transformToWebStream();
     } else if (bodyAny instanceof Readable) {
-      bodyStream = Readable.toWeb(bodyAny) as unknown as ReadableStream;
+      webStream = Readable.toWeb(bodyAny) as unknown as ReadableStream;
     } else {
-      // fallback: proberen alsof het al een web stream is
-      bodyStream = bodyAny as ReadableStream;
+      webStream = bodyAny as ReadableStream;
     }
 
     const headers: Record<string, string> = {
@@ -136,7 +141,7 @@ export const GET: APIRoute = async ({ url }) => {
       headers["Content-Length"] = String(obj.ContentLength);
     }
 
-    return new Response(bodyStream, { status: 200, headers });
+    return new Response(webStream, { status: 200, headers });
   } catch (err: any) {
     return json({ ok: false, error: err?.message ?? String(err) }, 500);
   }
