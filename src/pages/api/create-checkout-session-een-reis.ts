@@ -13,7 +13,9 @@ export const POST: APIRoute = async ({ request }) => {
     const secretKey = import.meta.env.STRIPE_SECRET_KEY;
     if (!secretKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
 
-    const origin = new URL(request.url).origin;
+    const origin =
+  import.meta.env.PROD_ORIGIN ??
+  new URL(request.url).origin;
 
     const stripe = new Stripe(secretKey);
 
@@ -24,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
           price_data: {
             currency: "eur",
             product_data: { name: "Een reis door de Bijbel" },
-            unit_amount: 1, // €30,00
+            unit_amount: 1, // €0,01 test
           },
           quantity: 1,
         },
