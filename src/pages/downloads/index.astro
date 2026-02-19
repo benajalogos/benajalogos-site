@@ -21,6 +21,9 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 
   <!-- Boeken -->
+
+   <!-- Boek een reis door de Bijbel-->
+
   <div class="downloads-grid" style="margin-top:48px;">
 
     <div class="card">
@@ -49,14 +52,34 @@ import BaseLayout from "@layouts/BaseLayout.astro";
     </li>
 
     <li>
-      <span>Volledige inhoud</span>
-      <a href="https://buy.stripe.com/6oU4grdKOfBi8DW0kqenS0" target="_blank">
-        <span class="badge paid">Koop nu</span>
-      </a>
-    </li>
+  <span>Volledige inhoud - € 30</span>
+
+  <button id="buy-een-reis" class="badge paid">
+    Koop nu
+  </button>
+
+  <script>
+    document.getElementById("buy-een-reis")?.addEventListener("click", async () => {
+      const res = await fetch("/api/create-checkout-session-een-reis", {
+        method: "POST"
+      });
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Fout bij starten betaling");
+      }
+    });
+  </script>
+</li>
 
   </ul>
 </div>
+
+ <!-- Boek Het handboek voor leven-->
+
 
     <div class="card">
       <h3>Het handboek voor leven</h3>
@@ -84,7 +107,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
 <li>
   <span>Volledige inhoud</span>
-  <a href="https://buy.stripe.com/4gM00bcGKfBif2kaZ4enS0" target="_blank">
+  <a href="https://buy.stripe.com/4gM00bcGKfBif2kaZ4enS03" target="_blank">
     <span class="badge paid">Koop nu</span>
   </a>
 </li>
@@ -93,12 +116,12 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
   </div>
 
-  <!-- Korting -->
+  <!-- Korting op boeken-->
  
   <div class="downloads-discount" style="margin-top:48px;">
 
     <a 
-      href="https://buy.stripe.com/28E9AL4ae1KsaM40kqenS0"
+      href="https://buy.stripe.com/28E9AL4ae1KsaM40kqenS04"
       target="_blank"
       class="card"
       style="text-align:center; display:flex; align-items:center; justify-content:center; text-decoration:none;">
