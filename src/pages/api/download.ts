@@ -2,7 +2,6 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { Readable } from "node:stream";
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -14,52 +13,34 @@ function json(data: unknown, status = 200) {
   });
 }
 
-// Belangrijk voor Vercel: Node runtime (niet edge)
+// Zorg dat dit op Vercel als Node runtime draait (niet Edge)
 export const config = { runtime: "nodejs" };
 
 export const GET: APIRoute = async ({ url }) => {
   try {
-    // ===== 0) Stripe secret =====
-    const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
-    if (!stripeSecretKey) {
-      return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
-    }
+    // --- 0) ENV ---
+    const stripeKey = import.meta.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
 
-    // ===== 0b) R2 env vars =====
-    const endpoint = import.meta.env.R2_ENDPOINT;
-    const accessKeyId = import.meta.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY;
-    const bucket = import.meta.env.R2_BUCKET;
+    const r2AccessKeyId = import.meta.env.R2_ACCESS_KEY_ID;
+    const r2SecretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY;
+    const r2Endpoint = import.meta.env.R2_ENDPOINT;
+    const r2Bucket = import.meta.env.R2_BUCKET;
 
-    if (!endpoint || !accessKeyId || !secretAccessKey || !bucket) {
-      return json(
-        {
-          ok: false,
-          error: "Missing R2 env vars",
-          missing: {
-            R2_ENDPOINT: !endpoint,
-            R2_ACCESS_KEY_ID: !accessKeyId,
-            R2_SECRET_ACCESS_KEY: !secretAccessKey,
-            R2_BUCKET: !bucket,
-          },
-        },
-        500
-      );
-    }
+    if (!r2AccessKeyId) return json({ ok: false, error: "Missing R2_ACCESS_KEY_ID" }, 500);
+    if (!r2SecretAccessKey) return json({ ok: false, error: "Missing R2_SECRET_ACCESS_KEY" }, 500);
+    if (!r2Endpoint) return json({ ok: false, error: "Missing R2_ENDPOINT" }, 500);
+    if (!r2Bucket) return json({ ok: false, error: "Missing R2_BUCKET" }, 500);
 
-    // ===== 1) Query params =====
-    const sessionIdRaw = url.searchParams.get("session_id");
-    if (!sessionIdRaw) return json({ ok: false, error: "Missing session_id" }, 400);
-    const sessionId = sessionIdRaw.trim();
+    // --- 1) Query params ---
+    const sessionId = (url.searchParams.get("session_id") ?? "").trim();
     if (!sessionId) return json({ ok: false, error: "Missing session_id" }, 400);
 
-    const fileKeyRaw = url.searchParams.get("file");
-    if (!fileKeyRaw) return json({ ok: false, error: "Missing file" }, 400);
-    const fileKey = fileKeyRaw.trim();
+    const fileKey = (url.searchParams.get("file") ?? "").trim();
     if (!fileKey) return json({ ok: false, error: "Missing file" }, 400);
 
-    // ===== 2) Stripe check: paid + complete =====
-    const stripe = new Stripe(stripeSecretKey);
+    // --- 2) Stripe check: paid + complete ---
+    const stripe = new Stripe(stripeKey);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     const isPaid = session.payment_status === "paid";
@@ -77,8 +58,8 @@ export const GET: APIRoute = async ({ url }) => {
       );
     }
 
-    // ===== 3) Map fileKey -> R2 object key =====
-    // (jouw opmerking verwerkt)
+    // --- 3) fileKey -> R2 object key ---
+    // LET OP: "een-reis" is GEEN folder. Het is alleen een “label” dat wij mappen naar de echte bestandsnaam.
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
       "het-handboek": "het-handboek.pdf",
@@ -87,9 +68,41 @@ export const GET: APIRoute = async ({ url }) => {
     const objectKey = fileMap[fileKey];
     if (!objectKey) return json({ ok: false, error: "Unknown file key" }, 400);
 
-    // ===== 4) Mooie downloadnaam (datum + 4 tekens) =====
+    // --- 4) R2 client (S3-compatible) ---
+    const s3 = new S3Client({
+      region: "auto",
+      endpoint: r2Endpoint,
+      credentials: {
+        accessKeyId: r2AccessKeyId,
+        secretAccessKey: r2SecretAccessKey,
+      },
+      forcePathStyle: true,
+    });
+
+    // --- 5) Fetch object from R2 ---
+    const cmd = new GetObjectCommand({
+      Bucket: r2Bucket,
+      Key: objectKey,
+    });
+
+    const obj = await s3.send(cmd);
+
+    if (!obj.Body) {
+      return json({ ok: false, error: "Empty file body from R2" }, 500);
+    }
+
+    // Body is in Node meestal een Readable stream
+    const bodyAny = obj.Body as any;
+
+    // Web Response kan een Node Readable meestal direct aan; anders fallback naar transformToWebStream()
+    const stream =
+      typeof bodyAny.transformToWebStream === "function"
+        ? bodyAny.transformToWebStream()
+        : bodyAny;
+
+    // --- 6) Download filename netjes maken ---
     const now = new Date();
-    const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
+    const date = now.toISOString().slice(0, 10);
     const code = sessionId.replace(/[^a-zA-Z0-9]/g, "").slice(-4).toUpperCase();
 
     const titleMap: Record<string, string> = {
@@ -100,48 +113,16 @@ export const GET: APIRoute = async ({ url }) => {
     const baseTitle = titleMap[fileKey] ?? fileKey;
     const downloadName = `${baseTitle}-${date}-${code}.pdf`;
 
-    // ===== 5) R2 stream (S3 compatible) =====
-    const s3 = new S3Client({
-      region: "auto",
-      endpoint,
-      credentials: { accessKeyId, secretAccessKey },
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${downloadName}"`,
+        // Content-Length is niet altijd beschikbaar bij R2 streaming; daarom weglaten.
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "no-store",
+      },
     });
-
-    const obj = await s3.send(
-      new GetObjectCommand({
-        Bucket: bucket,
-        Key: objectKey,
-      })
-    );
-
-    if (!obj.Body) {
-      return json({ ok: false, error: "Empty file body" }, 500);
-    }
-
-    // obj.Body kan in Node een Readable zijn; we maken er een web stream van
-    const bodyAny = obj.Body as any;
-
-    let webStream: ReadableStream;
-    if (typeof bodyAny?.transformToWebStream === "function") {
-      webStream = bodyAny.transformToWebStream();
-    } else if (bodyAny instanceof Readable) {
-      webStream = Readable.toWeb(bodyAny) as unknown as ReadableStream;
-    } else {
-      webStream = bodyAny as ReadableStream;
-    }
-
-    const headers: Record<string, string> = {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${downloadName}"`,
-      "X-Content-Type-Options": "nosniff",
-      "Cache-Control": "no-store",
-    };
-
-    if (typeof obj.ContentLength === "number") {
-      headers["Content-Length"] = String(obj.ContentLength);
-    }
-
-    return new Response(webStream, { status: 200, headers });
   } catch (err: any) {
     return json({ ok: false, error: err?.message ?? String(err) }, 500);
   }
