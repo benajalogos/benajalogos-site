@@ -28,7 +28,7 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
   name: "Een reis door de Bijbel",
   description: "Een verhaal dat meeneemt naar inzicht in kracht en wijsheid.",
 },
-            unit_amount: 1, // = € 30
+            unit_amount: 3000, // = € 30
           },
           quantity: 1,
         },
