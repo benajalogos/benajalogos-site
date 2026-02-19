@@ -82,15 +82,21 @@ export const GET: APIRoute = async ({ url }) => {
     // ---------- STREAM ----------
     const stream = obj.Body as ReadableStream;
 
-    return new Response(stream, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${filename}"`,
-        "Cache-Control": "no-store",
-      },
-    });
-  } catch (err: any) {
-    return json({ ok: false, error: err?.message ?? String(err) }, 500);
-  }
-};
+// unieke downloadnaam bouwen
+const now = new Date();
+const date = now.toISOString().slice(0, 10); // YYYY-MM-DD
+const code = sessionId
+  .replace(/[^a-zA-Z0-9]/g, "")
+  .slice(-6)
+  .toUpperCase();
+
+const downloadName = `Een-reis-door-de-Bijbel-${date}-${code}.pdf`;
+
+return new Response(stream, {
+  status: 200,
+  headers: {
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `attachment; filename="${downloadName}"`,
+    "Cache-Control": "no-store",
+  },
+});
