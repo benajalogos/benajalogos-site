@@ -130,11 +130,53 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 </li>
 
 <li>
-  <span>Volledige boek = €30</span>
-  <a href="https://buy.stripe.com/4gM00bcGKfBif2kaZ4enS0" target="_blank">
-    <span class="badge paid">Koop nu</span>
-  </a>
+  <span>Volledige boek = € 30</span>
+
+  <button
+    id="buy-handboek"
+    class="badge paid"
+    type="button"
+    style="cursor:pointer;"
+  >
+    Koop nu
+  </button>
+
+  <script>
+    (() => {
+      const btn = document.getElementById("buy-handboek");
+      if (!(btn instanceof HTMLButtonElement)) return;
+
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        btn.style.opacity = "0.8";
+        btn.textContent = "Even wachten…";
+
+        try {
+          const res = await fetch("/api/create-checkout-session-handboek", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          const data = await res.json();
+
+          if (data?.url) {
+            window.location.href = data.url;
+            return;
+          }
+
+          alert("Fout bij starten betaling");
+        } catch (e) {
+          alert("Fout bij starten betaling");
+        } finally {
+          btn.disabled = false;
+          btn.style.opacity = "1";
+          btn.textContent = "Koop nu";
+        }
+      });
+    })();
+  </script>
 </li>
+
       </ul>
     </div>
 
