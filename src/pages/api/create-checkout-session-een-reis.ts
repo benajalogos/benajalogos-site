@@ -13,9 +13,8 @@ export const POST: APIRoute = async ({ request }) => {
     const secretKey = import.meta.env.STRIPE_SECRET_KEY;
     if (!secretKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
 
-    const origin =
-  import.meta.env.PROD_ORIGIN ??
-  new URL(request.url).origin;
+    const origin = import.meta.env.PROD_ORIGIN;
+if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
 
     const stripe = new Stripe(secretKey);
 
