@@ -119,24 +119,27 @@ export const GET: APIRoute = async ({ url }) => {
     };
 
     const baseTitle = titleMap[file] ?? file;
-    const isZip = filename.toLowerCase().endsWith(".zip");
-    const ext = isZip ? ".zip" : ".pdf";
+const isZip = filename.toLowerCase().endsWith(".zip");
+const ext = isZip ? ".zip" : ".pdf";
 
-    const downloadName = `${baseTitle}-${date}-${code}${ext}`;
+const downloadName = `${baseTitle}-${date}-${code}${ext}`;
 
-    const contentType = isZip
-      ? "application/zip"
-      : "application/pdf";
+const contentType = isZip
+  ? "application/zip"
+  : file === "het-handboek"
+    ? "application/octet-stream"
+    : "application/pdf";
 
-    // ---------- RESPONSE ----------
-    return new Response(stream, {
-      status: 200,
-      headers: {
-        "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename="${downloadName}"`,
-        "Cache-Control": "no-store",
-      },
-    });
+// ---------- RESPONSE ----------
+return new Response(stream, {
+  status: 200,
+  headers: {
+    "Content-Type": contentType,
+    "Content-Disposition": `attachment; filename="${downloadName}"`,
+    "Cache-Control": "no-store",
+  },
+});
+  
   } catch (err: any) {
     return json({ ok: false, error: err?.message ?? String(err) }, 500);
   }
