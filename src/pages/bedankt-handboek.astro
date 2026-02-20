@@ -63,35 +63,29 @@ const downloadUrl = sessionId
 
   <script>
 (() => {
-  const btn = document.getElementById("buy-handboek");
+  const btn = document.querySelector('[data-download="het-handboek"]');
   if (!(btn instanceof HTMLButtonElement)) return;
 
-  btn.addEventListener("click", async () => {
-    btn.disabled = true;
+  btn.addEventListener("click", () => {
+    const url = btn.getAttribute("data-url");
+    if (!url) return;
+
+    btn.textContent = "Download gestart…";
     btn.style.opacity = "0.8";
-    btn.textContent = "Even wachten…";
+    btn.disabled = true;
 
-    try {
-      const res = await fetch("/api/create-checkout-session-handboek", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+    // 👉 echte download trigger
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-      const data = await res.json();
-
-      if (data?.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      alert("Fout bij starten betaling");
-    } catch (e) {
-      alert("Fout bij starten betaling");
-    } finally {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.textContent = "Koop nu";
-    }
+    // 👉 na 5 seconden terug
+    setTimeout(() => {
+      window.location.href = "/downloads";
+    }, 5000);
   });
 })();
 </script>
