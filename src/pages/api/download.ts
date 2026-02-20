@@ -57,6 +57,7 @@ export const GET: APIRoute = async ({ url }) => {
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
       "het-handboek": "het-handboek-voor-leven.pdf",
+      "bundel": "benaja-bundel.zip",
     };
 
     const filename = fileMap[file];
@@ -101,15 +102,20 @@ export const GET: APIRoute = async ({ url }) => {
     const titleMap: Record<string, string> = {
       "een-reis": "Een-reis-door-de-Bijbel",
       "het-handboek": "Het-handboek-voor-leven",
+      "bundel": "Benaja-bundel",
     };
 
-    const baseTitle = titleMap[file] ?? file;
-    const downloadName = `${baseTitle}-${date}-${code}.pdf`;
+        const baseTitle = titleMap[file] ?? file;
+    const ext = filename.toLowerCase().endsWith(".zip") ? ".zip" : ".pdf";
+    const downloadName = `${baseTitle}-${date}-${code}${ext}`;
 
-    return new Response(stream, {
+    const contentType =
+      ext === ".zip" ? "application/zip" : "application/pdf";
+
+        return new Response(stream, {
       status: 200,
       headers: {
-        "Content-Type": "application/pdf",
+        "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${downloadName}"`,
         "Cache-Control": "no-store",
       },
