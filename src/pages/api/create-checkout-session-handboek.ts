@@ -10,10 +10,11 @@ function json(data: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const secretKey = import.meta.env.STRIPE_SECRET_KEY;
+    const secretKey = import.meta.env.STRIPE_SECRET_KEY as string | undefined;
+const origin = import.meta.env.PROD_ORIGIN as string | undefined;
     if (!secretKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
 
-    const origin = import.meta.env.PROD_ORIGIN;
+
 if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
 
     const stripe = new Stripe(secretKey);
@@ -25,9 +26,9 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
           price_data: {
             currency: "eur",
             product_data: {
-            name: "Het handboek voor leven",
-            description: "Inzicht in het leefproces voor een gezond, duurzaam en rechtvaardig leven.",
-        },
+  name: "Het handboek voor leven",
+description: "Inzicht in het leefproces voor een gezond, duurzaam en rechtvaardig leven.",
+},
             unit_amount: 3000, // = € 30
           },
           quantity: 1,
@@ -35,14 +36,14 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
       ],
 
 
-      // ✅ DIT is de fix: altijd terug naar /bedankt-een-reis MET session_id
+      // ✅ DIT is de fix: altijd terug naar /bedankt-handboek MET session_id
 
-      success_url: `${origin}/bedankt-een-reis?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/bedankt-handboek?session_id={CHECKOUT_SESSION_ID}`,
       
       cancel_url: `${origin}/downloads`,
 
       // handig voor later, maar niet verplicht
-      metadata: { file: "een-reis" },
+      metadata: { file: "het-handboek" },
     });
 
     return json({ ok: true, url: session.url, id: session.id }, 200);

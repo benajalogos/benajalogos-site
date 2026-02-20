@@ -62,26 +62,37 @@ const downloadUrl = sessionId
   </div>
 
   <script>
-    (() => {
-      const btn = document.querySelector('[data-download="het-handboek"]');
-      if (!(btn instanceof HTMLButtonElement)) return;
+(() => {
+  const btn = document.getElementById("buy-handboek");
+  if (!(btn instanceof HTMLButtonElement)) return;
 
-      btn.addEventListener("click", () => {
-        const url = btn.getAttribute("data-url");
-        if (!url) return;
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    btn.style.opacity = "0.8";
+    btn.textContent = "Even wachten…";
 
-        btn.textContent = "Download gestart…";
-        btn.style.opacity = "0.8";
-
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = url;
-        document.body.appendChild(iframe);
-
-        setTimeout(() => {
-          window.location.href = "/downloads";
-        }, 5000);
+    try {
+      const res = await fetch("/api/create-checkout-session-handboek", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
-    })();
-  </script>
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      alert("Fout bij starten betaling");
+    } catch (e) {
+      alert("Fout bij starten betaling");
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.textContent = "Koop nu";
+    }
+  });
+})();
+</script>
 </BaseLayout>

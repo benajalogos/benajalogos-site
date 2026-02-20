@@ -56,7 +56,7 @@ export const GET: APIRoute = async ({ url }) => {
     // ---------- FILE MAP ----------
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
-      "het-handboek": "het-handboek.pdf",
+      "het-handboek": "het-handboek-voor-leven.pdf",
     };
 
     const filename = fileMap[file];
