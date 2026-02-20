@@ -1,5 +1,5 @@
 {
-  "extends": "astro/tsconfigs/strict",
+"extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "baseUrl": ".",
     "types": ["node"],
@@ -12,4 +12,3 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "node_modules"]
 }
-
