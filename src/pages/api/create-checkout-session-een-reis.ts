@@ -10,10 +10,11 @@ function json(data: unknown, status = 200) {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const secretKey = import.meta.env.STRIPE_SECRET_KEY;
+    const secretKey = import.meta.env.STRIPE_SECRET_KEY as string | undefined;
+const origin = import.meta.env.PROD_ORIGIN as string | undefined;
     if (!secretKey) return json({ ok: false, error: "Missing STRIPE_SECRET_KEY" }, 500);
 
-    const origin = import.meta.env.PROD_ORIGIN;
+
 if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
 
     const stripe = new Stripe(secretKey);
@@ -28,7 +29,7 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
   name: "Een reis door de Bijbel",
   description: "Een verhaal dat meeneemt naar inzicht in kracht en wijsheid.",
 },
-            unit_amount: 3000, // = € 30
+            unit_amount: 1, // = € 30
           },
           quantity: 1,
         },
