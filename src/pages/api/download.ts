@@ -105,21 +105,28 @@ export const GET: APIRoute = async ({ url }) => {
       "bundel": "Benaja-bundel",
     };
 
-        const baseTitle = titleMap[file] ?? file;
-    const ext = filename.toLowerCase().endsWith(".zip") ? ".zip" : ".pdf";
-    const downloadName = `${baseTitle}-${date}-${code}${ext}`;
+       const baseTitle = titleMap[file] ?? file;
 
-    const contentType =
-      ext === ".zip" ? "application/zip" : "application/pdf";
+const isZip = filename.toLowerCase().endsWith(".zip");
+const isHandboek = file === "het-handboek";
 
-        return new Response(stream, {
-      status: 200,
-      headers: {
-        "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename="${downloadName}"`,
-        "Cache-Control": "no-store",
-      },
-    });
+const ext = isZip ? ".zip" : ".pdf";
+const downloadName = `${baseTitle}-${date}-${code}${ext}`;
+
+const contentType = isZip
+  ? "application/zip"
+  : isHandboek
+    ? "application/octet-stream"
+    : "application/pdf";
+
+return new Response(stream, {
+  status: 200,
+  headers: {
+    "Content-Type": contentType,
+    "Content-Disposition": `attachment; filename="${downloadName}"`,
+    "Cache-Control": "no-store",
+  },
+});
   } catch (err: any) {
     return json({ ok: false, error: err?.message ?? String(err) }, 500);
   }
