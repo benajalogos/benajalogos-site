@@ -26,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
             currency: "eur",
             product_data: {
               name: "Bundel — beide boeken",
-              description: "Beide boeken als bundel\nEen reis door de Bijbel\nHet handboek voor leven.",
+              description: "• Beide boeken als bundel • Een reis door de Bijbel • Het handboek voor leven",
             },
             unit_amount: 5000, // € 50,00
           },
