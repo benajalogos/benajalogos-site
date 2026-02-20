@@ -29,7 +29,7 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
   name: "Het handboek voor leven",
 description: "Inzicht in het leefproces voor een gezond, duurzaam en rechtvaardig leven.",
 },
-            unit_amount: 3000, // = € 30
+            unit_amount: 1, // = € 30
           },
           quantity: 1,
         },
