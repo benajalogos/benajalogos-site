@@ -64,26 +64,26 @@ const downloadUrl = sessionId
   </div>
 
   <script>
-  (() => {
-    const btn = document.querySelector('[data-download="korting"]');
-    if (!(btn instanceof HTMLButtonElement)) return;
+    (() => {
+      const btn = document.querySelector('[data-download="korting"]');
+      if (!(btn instanceof HTMLButtonElement)) return;
 
-    btn.addEventListener("click", () => {
-      const url = btn.getAttribute("data-url");
-      if (!url) return;
+      btn.addEventListener("click", () => {
+        const url = btn.getAttribute("data-url");
+        if (!url) return;
 
-      btn.textContent = "Download gestart…";
-      btn.style.opacity = "0.8";
+        btn.textContent = "Download gestart…";
+        btn.style.opacity = "0.8";
 
-      // ✅ betrouwbaar voor zip (Safari-proof)
-      window.location.href = url;
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = url;
+        document.body.appendChild(iframe);
 
-      // Optioneel: NIET meteen redirecten, anders onderbreek je soms de download
-      // Als je per se terug wil:
-      setTimeout(() => {
-        window.location.href = "/downloads";
-      }, 5000);
-    });
-  })();
-</script>
+        setTimeout(() => {
+          window.location.href = "/downloads";
+        }, 5000);
+      });
+    })();
+  </script>
 </BaseLayout>
