@@ -33,7 +33,7 @@ export const POST: APIRoute = async () => {
             currency: "eur",
             product_data: {
               name: "Bundelkorting",
-              description: "Bundel-download (zip) — korting.",
+              description: "Korting aankoop beide boeken - Een reis door de Bijbel en Het handboek voor leven.",
             },
             // ✅ pas dit bedrag aan naar jouw kortingprijs (in centen)
             unit_amount: 1, // TEST: €0,01 - wordt €50
