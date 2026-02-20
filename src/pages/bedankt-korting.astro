@@ -1,0 +1,89 @@
+---
+export const prerender = false;
+
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const sessionId = Astro.url.searchParams.get("session_id")?.trim() ?? "";
+
+const downloadUrl = sessionId
+  ? `/api/download?session_id=${encodeURIComponent(sessionId)}&file=korting`
+  : "";
+---
+
+<BaseLayout title="Bedankt — Benaja Logos" noindex={true}>
+  <div style="max-width:720px; margin:0 auto; padding-top:48px;">
+    <h1>Bedankt voor je aankoop</h1>
+
+    <p style="color:var(--muted);">
+      Je bundel-download staat hieronder voor je klaar.
+    </p>
+
+    <div class="card" style="margin-top:50px; padding:20px;">
+      <p style="margin-top:0px;">
+        <strong>Bundelkorting — download (zip)</strong>
+      </p>
+
+      <button
+        type="button"
+        data-download="korting"
+        data-url={downloadUrl}
+        style="
+          display:inline-flex;
+          align-items:center;
+          justify-content:center;
+          padding:12px 18px;
+          background:var(--accent);
+          color:#ffffff;
+          border-radius:10px;
+          font-weight:600;
+          width:fit-content;
+          border:none;
+          cursor:pointer;
+        "
+      >
+        Download
+      </button>
+
+      {!sessionId && (
+        <p style="margin-top:12px; color:var(--muted);">
+          Geen sessie-id gevonden. Open deze pagina via de betaling.
+        </p>
+      )}
+    </div>
+
+    <p style="margin-top:50px; color:var(--muted);">
+      Tip: sla het bestand op je apparaat op zodat je het altijd bij de hand hebt.
+    </p>
+
+    <p style="margin-top:50px; color:var(--muted);">
+      <strong>Werkt de download niet? Laat het ons weten</strong>
+      <a href="mailto:support@benajalogos.nl?subject=Bericht%20via%20website%20Benaja%20Logos">
+        support@benajalogos.nl
+      </a>.
+    </p>
+  </div>
+
+  <script>
+    (() => {
+      const btn = document.querySelector('[data-download="korting"]');
+      if (!(btn instanceof HTMLButtonElement)) return;
+
+      btn.addEventListener("click", () => {
+        const url = btn.getAttribute("data-url");
+        if (!url) return;
+
+        btn.textContent = "Download gestart…";
+        btn.style.opacity = "0.8";
+
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = url;
+        document.body.appendChild(iframe);
+
+        setTimeout(() => {
+          window.location.href = "/downloads";
+        }, 5000);
+      });
+    })();
+  </script>
+</BaseLayout>
