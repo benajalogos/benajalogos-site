@@ -25,13 +25,19 @@ const { title = "Benaja Logos" } = Astro.props;
       property="og:description"
       content="Inzicht in een gezond, rechtvaardig en duurzaam leven."
     />
-    <meta property="og:image" content="/images/logo.png" />
+    <meta property="og:image" content="https://benajalogos.nl/images/logo.png" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://benajalogos.nl" />
     <meta property="og:site_name" content="Benaja Logos" />
 
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1200" />
+
+
     <!-- Styles -->
     <link rel="stylesheet" href="/styles/global.css" />
+
 
     <!-- Icons -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -52,7 +58,7 @@ const { title = "Benaja Logos" } = Astro.props;
 
         <div class="logo-side" aria-hidden="true">
           <img
-            src="/images/logo.png"
+            src="/images/logo-trans.png"
             alt="Benaja Logos"
             class="site-logo"
             loading="eager"
