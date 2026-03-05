@@ -55,13 +55,13 @@ footer{
   max-width:1000px;
   margin:0 auto;
   padding:12px 18px 12px;
+  text-align:center;
 }
 
 .footer-text{
   font-size:13px;
   color:var(--muted);
   letter-spacing:0.2px;
-  text-align:center;
 }
 
 
