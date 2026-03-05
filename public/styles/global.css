@@ -7,6 +7,8 @@
   --accent:#1f3a5f;
 }
 
+
+
 /* ---------- Reset ---------- */
 
 *{ box-sizing:border-box; }
@@ -24,6 +26,8 @@ body{
   flex-direction:column;
 }
 
+
+
 /* ---------- Container ---------- */
 
 .container{
@@ -32,6 +36,8 @@ body{
   margin:0 auto;
   padding:0 24px;
 }
+
+
 
 /* ---------- Header / Footer ---------- */
 
@@ -55,6 +61,8 @@ footer{
   font-size:12px;
 }
 
+
+
 /* ---------- Navigation ---------- */
 
 .header-inner{
@@ -67,19 +75,18 @@ footer{
 nav{
   display:flex;
   flex-wrap:nowrap;
+  align-items:center;
+  gap:16px;
 }
 
-nav a{
+nav a + a::before{
+  content:"|";
   margin-right:16px;
 }
 
-nav a:last-child{
-  margin-right:0;
-}
 
-/* ===================================================== */
-/* ================== LOGO LAYOUT ====================== */
-/* ===================================================== */
+
+/* ----------  LOGO LAYOUT  ---------- */
 
 .main-layout{
   display:grid;
@@ -91,26 +98,33 @@ nav a:last-child{
   /* nieuw */
   margin-left:auto;
   margin-right:auto;
-  transform: translateX(0px); /* meer naar rechts = hoger getal */
+  transform: translateX(0px);                          /* meer naar rechts = hoger getal */
 
 }
 
 .logo-side{
   display:flex;
-  justify-content:flex-start;  /* maximaal links in de logokolom */
+  justify-content:flex-start;                          /* maximaal links in de logokolom */
   align-items:flex-start;
-  padding-left:0;              /* startpunt = strak links */
-  padding-top:0;               /* verticaal bijstellen */
+  padding-left:0;                                      /* startpunt = strak links */
+  padding-top:0;                                       /* verticaal bijstellen */
+}
+
+.logo-side:focus-visible{
+  outline:2px solid var(--line);
+  outline-offset:4px;
 }
 
 .site-logo{
   width:220px;
   height:auto;
   display:block;
-  margin-top:-68px;            /* jouw verticale afstelling */
+  margin-top:-68px;                                    /* jouw verticale afstelling */
 }
 
-/* Responsive */
+
+
+/* ----------  Responsive  ----------*/
 
 @media (max-width:1024px){
   .main-layout{
@@ -137,17 +151,19 @@ nav a:last-child{
   }
 
   nav a{
-    display:flex;              /* tekst zelf ook centreren */
+    display:flex;                                        /* tekst zelf ook centreren */
     align-items:flex-end;
     flex: 0 0 auto;
     margin-right: 0;
     font-size: 15px;
-    line-height:1;             /* voorkomt zakken */
+    line-height:1;                                       /* voorkomt zakken */
   }
 
 }
 
-/* Mobile logo (inline next to Home) */
+
+
+/* ----------  Mobile logo (inline next to Home) ---------- */
 .mobile-logo{
   display:none;
 }
@@ -166,7 +182,9 @@ nav a:last-child{
   }
 }
 
-  /* nav blijft 1 regel en scrollbaar */
+
+
+  /* ----------  nav blijft 1 regel en scrollbaar ---------- */
   nav{
     width:100%;
   }
@@ -198,7 +216,27 @@ small,
   color:var(--muted);
 }
 
-/* ---------- Cards & Grid ---------- */
+
+
+/* ----------  Contact  ---------- */
+
+.contact-email{
+  margin:22px 0;
+  padding:14px 18px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  display:inline-block;
+}
+
+.contact-email a{
+  text-decoration:none;
+  font-weight:500;
+}
+
+
+
+/* ---------- Cards ---------- */
 
 .card{
   background:var(--card);
@@ -210,26 +248,105 @@ small,
   height:100%;
 }
 
+
+
+/* ---------- boekknoppen in cards ----------- */
+
+.book-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:12px;
+}
+
+.btn-buy{
+  background:#fff;
+  border:1px solid var(--line);
+}
+
+
+
+/* ----------  Grid  ---------- */ 
+
 .grid{
   display:grid;
-  gap:16px;
+  column-gap:8px;
+  row-gap:40px;                                           /* afstand tussen de twee regels */
   align-items:stretch;
+}
+
+
+/* ---------- Hero sectie ---------- */
+
+.hero{
+  text-align:center;
+}
+
+.hero-home{                                               /* Homepage hero (alleen op /) */
+  margin-top:60px;
+}
+
+.hero-home h1{
+  margin:0 0 14px;
+  line-height:1.12;
+}
+
+.hero-home p{
+  margin:0;
+  line-height:1.55;
+}
+
+.hero-home p + p{
+  margin-top:10px;
 }
 
 @media (min-width:860px){
   .grid-2{
     grid-template-columns:1fr 1fr;
+    --g:8px;                                                /* kleiner als je wilt */
+  }
+
+  .grid-center{
+    grid-column:1 / -1;
+    width:calc((100% - var(--g)) / 2);                      /* exact 1 kolom breed */
+    justify-self:center;                                    /* perfect in het midden */
+  }
+
+  .grid-center .btn{
+    display:block;
+    width:50%;
+    text-align:center;
+  }
+
+  .home-cta .btn{
+    width:220px;
+    display:inline-flex;
+    justify-content:center;
+    text-align:center;
+  }
+
+  .home-cta > div{
+    display:flex;
+    justify-content:center;
+  }
+
+  .home-cta .grid-center{
+    grid-column:1 / -1;
   }
 }
+
 
 /* ---------- Buttons ---------- */
 
 .btn{
-  display:inline-block;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
   padding:10px 14px;
   border-radius:12px;
   border:1px solid var(--line);
   background:var(--card);
+  text-align:center;
 }
 
 .btn:hover{
@@ -240,6 +357,22 @@ small,
 .card .btn{
   align-self:center;
 }
+
+
+
+/* ---------- knoppen onder boeken ---------- */
+
+.book-actions{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:12px;
+}
+
+.book-actions .btn{
+  width:140px;
+}
+
 
 /* ---------- Badges ---------- */
 
@@ -262,6 +395,8 @@ small,
   border-color: rgba(37,99,235,.35);
 }
 
+
+
 /* ---------- Page Helpers ---------- */
 
 .back-link{ margin:0 0 18px 0; }
@@ -282,6 +417,8 @@ small,
 .feature-list li{
   margin:0 0 10px 0;
 }
+
+
 
 /* ---------- Downloads ---------- */
 
@@ -333,12 +470,16 @@ small,
   white-space:nowrap;
 }
 
+
+
 /* ---------- Book details ---------- */
 
 .model-line{
   margin-top:10px;
   font-weight:500;
 }
+
+
 
 /* ---------- Kennismaking ---------- */
 

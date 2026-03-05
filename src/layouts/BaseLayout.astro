@@ -57,14 +57,14 @@ const { title = "Benaja Logos" } = Astro.props;
           <slot />
         </div>
 
-        <div class="logo-side" aria-hidden="true">
-          <img
-            src="/images/logo-tran.png"
-            alt="Benaja Logos"
-            class="site-logo"
-            loading="eager"
-          />
-        </div>
+        <a class="logo-side" href="/" aria-label="Home">
+  <img
+    src="/images/logo-tran.png"
+    alt="Benaja Logos"
+    class="site-logo"
+    loading="eager"
+  />
+</a>
       </div>
     </main>
 
