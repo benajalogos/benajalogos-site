@@ -358,6 +358,7 @@ small,
   border:1px solid var(--line);
   background:var(--card);
   text-align:center;
+  line-height:1.3;
 }
 
 .btn:hover{
