@@ -271,8 +271,19 @@ small,
 .grid{
   display:grid;
   column-gap:8px;
-  row-gap:40px;                                           /* afstand tussen de twee regels */
+  row-gap:40px;                                     /* afstand tussen de twee regels */
   align-items:stretch;
+  justify-items:center;                              /* centreert inhoud in de cellen */
+}
+
+.grid-2{
+  grid-template-columns:repeat(2,1fr);
+}
+
+@media (max-width:700px){
+  .grid-2{
+    grid-template-columns:1fr;
+  }
 }
 
 
