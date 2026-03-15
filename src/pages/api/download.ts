@@ -6,7 +6,7 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
 import { kv } from "@vercel/kv";
 
-export const config = { runtime: "nodejs" };
+export const prerender = false;
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -80,13 +80,14 @@ export const GET: APIRoute = async ({ url }) => {
 
     // ---------- R2 CLIENT ----------
     const r2 = new S3Client({
-      region: "auto",
-      endpoint: R2_ENDPOINT,
-      credentials: {
-        accessKeyId: R2_ACCESS_KEY_ID,
-        secretAccessKey: R2_SECRET_ACCESS_KEY,
-      },
-    });
+  region: "auto",
+  endpoint: R2_ENDPOINT,
+  credentials: {
+    accessKeyId: R2_ACCESS_KEY_ID,
+    secretAccessKey: R2_SECRET_ACCESS_KEY,
+  },
+  forcePathStyle: true,
+});
 
     // ---------- GET FILE ----------
     const obj = await r2.send(
