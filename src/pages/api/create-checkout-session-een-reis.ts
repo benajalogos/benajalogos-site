@@ -38,7 +38,7 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
 
       // ✅ DIT is de fix: altijd terug naar /bedankt-een-reis MET session_id
 
-      success_url: `${origin}/api/download?session_id={CHECKOUT_SESSION_ID}&file=een-reis`,
+      success_url: `${origin}/bedankt-een-reis?session_id={CHECKOUT_SESSION_ID}`,
       
       cancel_url: `${origin}/downloads`,
 
