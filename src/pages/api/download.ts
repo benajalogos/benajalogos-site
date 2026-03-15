@@ -63,9 +63,6 @@ export const GET: APIRoute = async ({ url }) => {
       return json({ ok: false, error: "Download already used" }, 403);
     }
 
-    // markeer als gebruikt (7 dagen geldig)
-    await kv.set(kvKey, "1", { ex: 60 * 60 * 24 * 7 });
-
     // ---------- FILE MAP ----------
     const fileMap: Record<string, string> = {
       "een-reis": "een-reis-door-de-bijbel.pdf",
@@ -80,14 +77,14 @@ export const GET: APIRoute = async ({ url }) => {
 
     // ---------- R2 CLIENT ----------
     const r2 = new S3Client({
-  region: "auto",
-  endpoint: R2_ENDPOINT,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID,
-    secretAccessKey: R2_SECRET_ACCESS_KEY,
-  },
-  forcePathStyle: true,
-});
+      region: "auto",
+      endpoint: R2_ENDPOINT,
+      credentials: {
+        accessKeyId: R2_ACCESS_KEY_ID,
+        secretAccessKey: R2_SECRET_ACCESS_KEY,
+      },
+      forcePathStyle: true,
+    });
 
     // ---------- GET FILE ----------
     const obj = await r2.send(
@@ -101,11 +98,19 @@ export const GET: APIRoute = async ({ url }) => {
       return json({ ok: false, error: "File not found in R2" }, 404);
     }
 
-   
+    // Pas nú markeren als gebruikt — R2 werkt
+    await kv.set(kvKey, "1", { ex: 60 * 60 * 24 * 7 });
+
     // ---------- STREAM ----------
-    const stream = obj.Body as any;
+    const nodeStream = obj.Body as Readable;
 
-
+    const webStream = new ReadableStream({
+      start(controller) {
+        nodeStream.on("data", (chunk) => controller.enqueue(chunk));
+        nodeStream.on("end", () => controller.close());
+        nodeStream.on("error", (err) => controller.error(err));
+      },
+    });
 
     // ---------- UNIEKE DOWNLOADNAAM ----------
     const now = new Date();
@@ -123,27 +128,28 @@ export const GET: APIRoute = async ({ url }) => {
     };
 
     const baseTitle = titleMap[file] ?? file;
-const isZip = filename.toLowerCase().endsWith(".zip");
-const ext = isZip ? ".zip" : ".pdf";
 
-const downloadName = `${baseTitle}-${date}-${code}${ext}`;
+    const isZip = filename.toLowerCase().endsWith(".zip");
+    const ext = isZip ? ".zip" : ".pdf";
 
-const contentType = isZip
-  ? "application/zip"
-  : file === "het-handboek"
-    ? "application/octet-stream"
-    : "application/pdf";
+    const downloadName = `${baseTitle}-${date}-${code}${ext}`;
 
-// ---------- RESPONSE ----------
-return new Response(stream, {
-  status: 200,
-  headers: {
-    "Content-Type": contentType,
-    "Content-Disposition": `attachment; filename="${downloadName}"`,
-    "Cache-Control": "no-store",
-  },
-});
-  
+    const contentType = isZip
+      ? "application/zip"
+      : file === "het-handboek"
+      ? "application/octet-stream"
+      : "application/pdf";
+
+    // ---------- RESPONSE ----------
+    return new Response(webStream, {
+      status: 200,
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": `attachment; filename="${downloadName}"`,
+        "Cache-Control": "no-store",
+      },
+    });
+
   } catch (err: any) {
     return json({ ok: false, error: err?.message ?? String(err) }, 500);
   }
