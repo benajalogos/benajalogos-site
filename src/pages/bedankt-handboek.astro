@@ -82,6 +82,10 @@ const downloadUrl = sessionId
     a.click();
     document.body.removeChild(a);
 
+    // 👉 na 5 seconden terug
+    setTimeout(() => {
+      window.location.href = "/downloads";
+    }, 5000);
   });
 })();
 </script>

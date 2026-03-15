@@ -76,10 +76,7 @@ const downloadUrl = sessionId
         btn.disabled = true;
         btn.style.cursor = "default";
 
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = url;
-        document.body.appendChild(iframe);
+        window.location.href = url;
 
       });
     })();
