@@ -101,8 +101,11 @@ export const GET: APIRoute = async ({ url }) => {
       return json({ ok: false, error: "File not found in R2" }, 404);
     }
 
+   
     // ---------- STREAM ----------
-    const stream = Readable.toWeb(obj.Body as any) as unknown as ReadableStream;
+    const stream = obj.Body as any;
+
+
 
     // ---------- UNIEKE DOWNLOADNAAM ----------
     const now = new Date();
