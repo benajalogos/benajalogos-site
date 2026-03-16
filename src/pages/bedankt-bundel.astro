@@ -61,7 +61,7 @@ const downloadUrl = sessionId
     </p>
 
     <p id="countdown" style="margin-top:32px; color:var(--muted); font-size:0.9rem; display:none;">
-      Je wordt over <strong id="countdown-seconds">10</strong> seconden teruggestuurd naar de downloadpagina.
+      Je wordt over <strong id="countdown-seconds">30</strong> seconden teruggestuurd naar de downloadpagina.
       <a href="/downloads" style="margin-left:4px;">Ga nu</a>
     </p>
   </div>
@@ -91,21 +91,25 @@ const downloadUrl = sessionId
           btn.style.opacity = "1";
         }, 2000);
 
-        // Toon afteller na klik
+        // Toon afteller na 30 seconden
         const countdownEl = document.getElementById("countdown-seconds");
         const countdownP = document.getElementById("countdown");
-        if (countdownP) countdownP.style.display = "block";
 
-        let seconds = 10;
-        const interval = setInterval(() => {
-          seconds--;
-          if (countdownEl) countdownEl.textContent = String(seconds);
+        let seconds = 30;
 
-          if (seconds <= 0) {
-            clearInterval(interval);
-            window.location.href = "/downloads";
-          }
-        }, 1000);
+        setTimeout(() => {
+          if (countdownP) countdownP.style.display = "block";
+
+          const interval = setInterval(() => {
+            seconds--;
+            if (countdownEl) countdownEl.textContent = String(seconds);
+
+            if (seconds <= 0) {
+              clearInterval(interval);
+              window.location.href = "/downloads";
+            }
+          }, 1000);
+        }, 30000);
       });
     })();
   </script>
