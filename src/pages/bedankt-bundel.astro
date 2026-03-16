@@ -80,8 +80,11 @@ const downloadUrl = sessionId
         btn.disabled = true;
         btn.style.cursor = "default";
 
-        // Open download in nieuw tabblad zodat deze pagina blijft
-        window.open(url, "_blank");
+        // Download via verborgen iframe — pagina blijft zichtbaar
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = url;
+        document.body.appendChild(iframe);
 
         setTimeout(() => {
           btn.textContent = "Download gestart ✓";
