@@ -60,7 +60,7 @@ const downloadUrl = sessionId
       <a href="mailto:support@benajalogos.nl?subject=Bericht%20via%20website%20Benaja%20Logos"> support@benajalogos.nl</a>.
     </p>
 
-    <p id="countdown" style="margin-top:32px; color:var(--muted); font-size:0.9rem;">
+    <p id="countdown" style="margin-top:32px; color:var(--muted); font-size:0.9rem; display:none;">
       Je wordt over <strong id="countdown-seconds">10</strong> seconden teruggestuurd naar de downloadpagina.
       <a href="/downloads" style="margin-left:4px;">Ga nu</a>
     </p>
@@ -68,7 +68,6 @@ const downloadUrl = sessionId
 
   <script>
     (() => {
-      // Download knop
       const btn = document.querySelector('[data-download="bundel"]');
       if (!(btn instanceof HTMLButtonElement)) return;
 
@@ -81,33 +80,30 @@ const downloadUrl = sessionId
         btn.disabled = true;
         btn.style.cursor = "default";
 
-        // Download starten zonder pagina te verlaten
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        // Open download in nieuw tabblad zodat deze pagina blijft
+        window.open(url, "_blank");
 
         setTimeout(() => {
           btn.textContent = "Download gestart ✓";
           btn.style.opacity = "1";
         }, 2000);
+
+        // Toon afteller na klik
+        const countdownEl = document.getElementById("countdown-seconds");
+        const countdownP = document.getElementById("countdown");
+        if (countdownP) countdownP.style.display = "block";
+
+        let seconds = 10;
+        const interval = setInterval(() => {
+          seconds--;
+          if (countdownEl) countdownEl.textContent = String(seconds);
+
+          if (seconds <= 0) {
+            clearInterval(interval);
+            window.location.href = "/downloads";
+          }
+        }, 1000);
       });
-
-      // Afteller
-      let seconds = 10;
-      const countdownEl = document.getElementById("countdown-seconds");
-
-      const interval = setInterval(() => {
-        seconds--;
-        if (countdownEl) countdownEl.textContent = String(seconds);
-
-        if (seconds <= 0) {
-          clearInterval(interval);
-          window.location.href = "/downloads";
-        }
-      }, 1000);
     })();
   </script>
 </BaseLayout>
