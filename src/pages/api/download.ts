@@ -4,7 +4,6 @@ import type { APIRoute } from "astro";
 import Stripe from "stripe";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "node:stream";
-import { kv } from "@vercel/kv";
 
 export const prerender = false;
 
@@ -27,12 +26,18 @@ export const GET: APIRoute = async ({ url }) => {
     const R2_SECRET_ACCESS_KEY = import.meta.env.R2_SECRET_ACCESS_KEY;
     const R2_BUCKET = import.meta.env.R2_BUCKET;
 
+    // Nieuwe Upstash database (kv_ prefix variabelen)
+    const KV_URL = import.meta.env.kv_KV_REST_API_URL?.replace(/\/$/, "");
+    const KV_TOKEN = import.meta.env.kv_KV_REST_API_TOKEN;
+
     if (
       !STRIPE_SECRET_KEY ||
       !R2_ENDPOINT ||
       !R2_ACCESS_KEY_ID ||
       !R2_SECRET_ACCESS_KEY ||
-      !R2_BUCKET
+      !R2_BUCKET ||
+      !KV_URL ||
+      !KV_TOKEN
     ) {
       return json({ ok: false, error: "Missing environment variables" }, 500);
     }
@@ -48,18 +53,18 @@ export const GET: APIRoute = async ({ url }) => {
     const stripe = new Stripe(STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
-    if (
-      session.payment_status !== "paid" ||
-      session.status !== "complete"
-    ) {
+    if (session.payment_status !== "paid" || session.status !== "complete") {
       return json({ ok: false, error: "Payment not completed" }, 403);
     }
 
     // ---------- DOWNLOAD-ONCE GUARD ----------
     const kvKey = `download:${session_id}:${file}`;
 
-    const alreadyDownloaded = await kv.get(kvKey);
-    if (alreadyDownloaded) {
+    const getRes = await fetch(`${KV_URL}/get/${kvKey}`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
+    const getData = await getRes.json();
+    if (getData.result) {
       return json({ ok: false, error: "Download already used" }, 403);
     }
 
@@ -88,18 +93,17 @@ export const GET: APIRoute = async ({ url }) => {
 
     // ---------- GET FILE ----------
     const obj = await r2.send(
-      new GetObjectCommand({
-        Bucket: R2_BUCKET,
-        Key: filename,
-      })
+      new GetObjectCommand({ Bucket: R2_BUCKET, Key: filename })
     );
 
     if (!obj.Body) {
       return json({ ok: false, error: "File not found in R2" }, 404);
     }
 
-    // Pas nú markeren als gebruikt — R2 werkt
-    await kv.set(kvKey, "1", { ex: 60 * 60 * 24 * 7 });
+    // Markeer als gebruikt (7 dagen) — pas nadat R2 werkt
+    await fetch(`${KV_URL}/set/${kvKey}/1/ex/604800`, {
+      headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    });
 
     // ---------- STREAM ----------
     const nodeStream = obj.Body as Readable;
@@ -128,10 +132,8 @@ export const GET: APIRoute = async ({ url }) => {
     };
 
     const baseTitle = titleMap[file] ?? file;
-
     const isZip = filename.toLowerCase().endsWith(".zip");
     const ext = isZip ? ".zip" : ".pdf";
-
     const downloadName = `${baseTitle}-${date}-${code}${ext}`;
 
     const contentType = isZip
