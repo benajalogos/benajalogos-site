@@ -59,6 +59,11 @@ const downloadUrl = sessionId
       <strong>Werkt de download niet? Laat het ons weten</strong>
       <a href="mailto:support@benajalogos.nl?subject=Bericht%20via%20website%20Benaja%20Logos"> support@benajalogos.nl</a>.
     </p>
+
+    <p id="countdown" style="margin-top:32px; color:var(--muted); font-size:0.9rem; display:none;">
+      Je wordt over <strong id="countdown-seconds">30</strong> seconden teruggestuurd naar de downloadpagina.
+      <a href="/downloads" style="margin-left:4px;">Ga nu</a>
+    </p>
   </div>
 
   <script>
@@ -72,12 +77,39 @@ const downloadUrl = sessionId
 
         btn.textContent = "Download gestart…";
         btn.style.opacity = "0.8";
+        btn.disabled = true;
+        btn.style.cursor = "default";
 
+        // Download via verborgen iframe — pagina blijft zichtbaar
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.src = url;
         document.body.appendChild(iframe);
 
+        setTimeout(() => {
+          btn.textContent = "Download gestart ✓";
+          btn.style.opacity = "1";
+        }, 2000);
+
+        // Toon afteller na 30 seconden
+        const countdownEl = document.getElementById("countdown-seconds");
+        const countdownP = document.getElementById("countdown");
+
+        let seconds = 30;
+
+        setTimeout(() => {
+          if (countdownP) countdownP.style.display = "block";
+
+          const interval = setInterval(() => {
+            seconds--;
+            if (countdownEl) countdownEl.textContent = String(seconds);
+
+            if (seconds <= 0) {
+              clearInterval(interval);
+              window.location.href = "/downloads";
+            }
+          }, 1000);
+        }, 30000);
       });
     })();
   </script>
