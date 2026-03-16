@@ -26,8 +26,8 @@ if (!origin) return json({ ok: false, error: "Missing PROD_ORIGIN" }, 500);
           price_data: {
             currency: "eur",
             product_data: {
-  name: "Het handboek voor leven",
-description: "Inzicht in het leefproces voor een gezond, duurzaam en rechtvaardig leven.",
+            name: "Het handboek voor leven",
+            description: "Inzicht in een gezond, rechtvaardig en duurzaam leven.",
 },
             unit_amount: 3000, // = € 30
           },
