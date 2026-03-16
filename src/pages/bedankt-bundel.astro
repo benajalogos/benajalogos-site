@@ -72,12 +72,21 @@ const downloadUrl = sessionId
 
         btn.textContent = "Download gestart…";
         btn.style.opacity = "0.8";
-
         btn.disabled = true;
         btn.style.cursor = "default";
 
-        window.location.href = url;
+        // Download starten zonder pagina te verlaten
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
 
+        setTimeout(() => {
+          btn.textContent = "Download gestart ✓";
+          btn.style.opacity = "1";
+        }, 2000);
       });
     })();
   </script>
