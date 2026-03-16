@@ -59,10 +59,16 @@ const downloadUrl = sessionId
       <strong>Werkt de download niet? Laat het ons weten</strong>
       <a href="mailto:support@benajalogos.nl?subject=Bericht%20via%20website%20Benaja%20Logos"> support@benajalogos.nl</a>.
     </p>
+
+    <p id="countdown" style="margin-top:32px; color:var(--muted); font-size:0.9rem;">
+      Je wordt over <strong id="countdown-seconds">10</strong> seconden teruggestuurd naar de downloadpagina.
+      <a href="/downloads" style="margin-left:4px;">Ga nu</a>
+    </p>
   </div>
 
   <script>
     (() => {
+      // Download knop
       const btn = document.querySelector('[data-download="bundel"]');
       if (!(btn instanceof HTMLButtonElement)) return;
 
@@ -88,6 +94,20 @@ const downloadUrl = sessionId
           btn.style.opacity = "1";
         }, 2000);
       });
+
+      // Afteller
+      let seconds = 10;
+      const countdownEl = document.getElementById("countdown-seconds");
+
+      const interval = setInterval(() => {
+        seconds--;
+        if (countdownEl) countdownEl.textContent = String(seconds);
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+          window.location.href = "/downloads";
+        }
+      }, 1000);
     })();
   </script>
 </BaseLayout>
