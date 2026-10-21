@@ -10,231 +10,117 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 
   <h1>Downloads</h1>
 
-   <p>
-     Hier vind je gratis onderdelen van de boeken om meer inzicht te krijgen in de inhoud.
-   </p>
+  <p>
+    Hier vind je gratis onderdelen van de boeken om meer inzicht te krijgen in de inhoud.
+  </p>
 
-    <p>
-     Daarnaast zijn de volledige digitale uitgaven hier tegen betaling beschikbaar.
-   </p>
-
-
+  <p>
+    Daarnaast zijn de volledige digitale uitgaven hier op aanvraag beschikbaar.
+  </p>
 
   <!-- Boeken -->
 
-   <!-- Boek een reis door de Bijbel-->
-
   <div class="downloads-grid" style="margin-top:48px;">
 
+    <!-- Boek Een reis door de Bijbel -->
+
     <div class="card">
-  <h3>Een reis door de Bijbel</h3>
+      <h3>Een reis door de Bijbel</h3>
 
-  <ul class="downloads-list">
-    <li>
-      <span>Voorwoord</span>
-      <a href="/downloads/een-reis-door-de-bijbel/voorwoord.pdf">
-        <span class="badge free">Gratis</span>
-      </a>
-    </li>
+      <ul class="downloads-list">
+        <li>
+          <span>Voorwoord</span>
+          <a href="/downloads/een-reis-door-de-bijbel/voorwoord.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-    <li>
-      <span>Nawoord</span>
-      <a href="/downloads/een-reis-door-de-bijbel/nawoord.pdf">
-        <span class="badge free">Gratis</span>
-      </a>
-    </li>
+        <li>
+          <span>Nawoord</span>
+          <a href="/downloads/een-reis-door-de-bijbel/nawoord.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-    <li>
-      <span>Inleidingen</span>
-      <a href="/downloads/een-reis-door-de-bijbel/inleidingen.pdf">
-        <span class="badge free">Gratis</span>
-      </a>
-    </li>
+        <li>
+          <span>Inleidingen</span>
+          <a href="/downloads/een-reis-door-de-bijbel/inleidingen.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-   <li>
-      <span>Compleet digitaal boek</span>
+        <li>
+          <span>Compleet digitaal boek</span>
 
-       <button
-        id="buy-een-reis"
-        class="badge paid"
-        type="button"
-        style="cursor:pointer;"
-        >
-        Vraag hier
-      </button>
+          <a
+            class="badge paid"
+            href="mailto:support@benajalogos.nl?subject=Aanvraag%20Een%20reis%20door%20de%20Bijbel"
+          >
+            Vraag aan
+          </a>
+        </li>
+      </ul>
+    </div>
 
-      <script>
-        (() => {
-        const btn = document.getElementById("buy-een-reis");
-        if (!(btn instanceof HTMLButtonElement)) return;
-
-        btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        btn.style.opacity = "0.8";
-        btn.textContent = "Even wachten…";
-
-        try {
-          const res = await fetch("/api/create-checkout-session-een-reis", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          });
-
-          const data = await res.json();
-
-          if (data?.url) {
-            window.location.href = data.url;
-            return;
-          }
-
-          alert("Fout bij starten betaling");
-        } catch (e) {
-          alert("Fout bij starten betaling");
-        } finally {
-          btn.disabled = false;
-          btn.style.opacity = "1";
-          btn.textContent = "Vraag hier";
-        }
-        });
-        })();
-     </script>
-    </li>
-
-  </ul>
-</div>
-
- <!-- Boek Het handboek voor leven-->
-
+    <!-- Boek Het handboek voor leven -->
 
     <div class="card">
       <h3>Het handboek voor leven</h3>
+
       <ul class="downloads-list">
         <li>
-  <span>Voorwoord</span>
-  <a href="/downloads/het-handboek-voor-leven/voorwoord.pdf">
-    <span class="badge free">Gratis</span>
-  </a>
-</li>
+          <span>Voorwoord</span>
+          <a href="/downloads/het-handboek-voor-leven/voorwoord.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-<li>
-  <span>Nawoord</span>
-  <a href="/downloads/het-handboek-voor-leven/nawoord.pdf">
-    <span class="badge free">Gratis</span>
-  </a>
-</li>
+        <li>
+          <span>Nawoord</span>
+          <a href="/downloads/het-handboek-voor-leven/nawoord.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-<li>
-  <span>Inleidingen</span>
-  <a href="/downloads/het-handboek-voor-leven/inleidingen.pdf">
-    <span class="badge free">Gratis</span>
-  </a>
-</li>
+        <li>
+          <span>Inleidingen</span>
+          <a href="/downloads/het-handboek-voor-leven/inleidingen.pdf">
+            <span class="badge free">Gratis</span>
+          </a>
+        </li>
 
-<li>
-      <span>Compleet digitaal boek</span>
+        <li>
+          <span>Compleet digitaal boek</span>
 
-       <button
-        id="buy-handboek"
-        class="badge paid"
-        type="button"
-        style="cursor:pointer;"
-        >
-        Vraag hier
-      </button>
-
-      <script>
-        (() => {
-        const btn = document.getElementById("buy-handboek");
-        if (!(btn instanceof HTMLButtonElement)) return;
-
-        btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        btn.style.opacity = "0.8";
-        btn.textContent = "Even wachten…";
-
-        try {
-          const res = await fetch("/api/create-checkout-session-handboek", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          });
-
-          const data = await res.json();
-
-          if (data?.url) {
-            window.location.href = data.url;
-            return;
-          }
-
-          alert("Fout bij starten betaling");
-        } catch (e) {
-          alert("Fout bij starten betaling");
-        } finally {
-          btn.disabled = false;
-          btn.style.opacity = "1";
-          btn.textContent = "Vraag hier";
-        }
-        });
-        })();
-     </script>
-    </li>
+          <a
+            class="badge paid"
+            href="mailto:support@benajalogos.nl?subject=Aanvraag%20Het%20handboek%20voor%20leven"
+          >
+            Vraag aan
+          </a>
+        </li>
       </ul>
     </div>
 
   </div>
 
-  <!-- Korting op boeken-->
- 
+  <!-- Beide boeken aanvragen -->
+
   <div class="downloads-discount" style="margin-top:48px;">
 
-  <div class="card" style="text-align:center;">
-    <h3 style="margin:0 0 16px 0;">
-      Beide boeken digitaal ontvangen
-    </h3>
+    <div class="card" style="text-align:center;">
+      <h3 style="margin:0 0 16px 0;">
+        Beide boeken digitaal ontvangen
+      </h3>
 
-    <button
-      id="buy-bundel"
-      class="badge paid"
-      type="button"
-      style="cursor:pointer;"
-    >
-      Vraag hier
-    </button>
+      <a
+        class="badge paid"
+        href="mailto:support@benajalogos.nl?subject=Aanvraag%20beide%20digitale%20boeken"
+      >
+        Vraag aan
+      </a>
+    </div>
+
   </div>
-
-  <script>
-    (() => {
-      const btn = document.getElementById("buy-bundel");
-      if (!(btn instanceof HTMLButtonElement)) return;
-
-      btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        btn.style.opacity = "0.8";
-        btn.textContent = "Even wachten…";
-
-        try {
-          const res = await fetch("/api/create-checkout-session-bundel", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          });
-
-          const data = await res.json();
-
-          if (data?.url) {
-            window.location.href = data.url;
-            return;
-          }
-
-          alert("Fout bij starten betaling");
-        } catch (e) {
-          alert("Fout bij starten betaling");
-        } finally {
-          btn.disabled = false;
-          btn.style.opacity = "1";
-          btn.textContent = "Vraag hier";
-        }
-      });
-    })();
-  </script>
-
-</div>
 
 </BaseLayout>
